@@ -1,6 +1,6 @@
 def registry = 'https://rachrafi.jfrog.io'
 def imageName = 'rachrafi.jfrog.io/rachrafi-docker-local/demo-workshop'
-def version   = '2.1.2'
+def version   = '2.1.3'
 
 pipeline {
     agent {
