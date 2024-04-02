@@ -8,9 +8,9 @@ pipeline {
             label 'maven'
         }
     }
-environment {
-    PATH = "/opt/apache-maven-3.9.6/bin:$PATH"
-}
+    environment {
+        PATH = "/opt/apache-maven-3.9.6/bin:$PATH"
+    }
     stages {
         stage("Build") {
             steps {
@@ -54,62 +54,62 @@ environment {
         }
 
 
-         stage("Jar Publish") {
+        stage("Jar Publish") {
             steps {
                 script {
                     echo '<--------------- Jar Publish Started --------------->'
-                     def server = Artifactory.newServer url:registry+"/artifactory" ,  credentialsId:"artifact-cred"
-                     def properties = "buildid=${env.BUILD_ID},commitid=${GIT_COMMIT}";
-                     def uploadSpec = """{
-                          "files": [
-                            {
-                              "pattern": "jarstaging/(*)",
-                              "target": "rachrafi-libs-release-local/{1}",
-                              "flat": "false",
-                              "props" : "${properties}",
-                              "exclusions": [ "*.sha1", "*.md5" ]
-                            }
-                         ]
-                     }"""
-                     def buildInfo = server.upload(uploadSpec)
-                     buildInfo.env.collect()
-                     server.publishBuildInfo(buildInfo)
-                     echo '<--------------- Jar Publish Ended --------------->'
+                    def server = Artifactory.newServer url:registry+"/artifactory" ,  credentialsId:"artifact-cred"
+                    def properties = "buildid=${env.BUILD_ID},commitid=${GIT_COMMIT}";
+                    def uploadSpec = """{
+                        "files": [
+                        {
+                            "pattern": "jarstaging/(*)",
+                            "target": "rachrafi-libs-release-local/{1}",
+                            "flat": "false",
+                            "props" : "${properties}",
+                            "exclusions": [ "*.sha1", "*.md5" ]
+                        }
+                        ]
+                    }"""
+                    def buildInfo = server.upload(uploadSpec)
+                    buildInfo.env.collect()
+                    server.publishBuildInfo(buildInfo)
+                    echo '<--------------- Jar Publish Ended --------------->'
                 }
             }
-         }
-
-    stage(" Docker Build ") {
-      steps {
-        script {
-           echo '<--------------- Docker Build Started --------------->'
-           app = docker.build(imageName+":"+version)
-           echo '<--------------- Docker Build Ends --------------->'
         }
-      }
-    }
 
-    stage (" Docker Publish "){
+        stage(" Docker Build ") {
         steps {
             script {
-               echo '<--------------- Docker Publish Started --------------->'
-                docker.withRegistry(registry, 'artifact-cred'){
-                    app.push()
-                }
-               echo '<--------------- Docker Publish Ended --------------->'
+            echo '<--------------- Docker Build Started --------------->'
+            app = docker.build(imageName+":"+version)
+            echo '<--------------- Docker Build Ends --------------->'
             }
         }
-    }
+        }
 
-    stage(" Deploy ") {
-       steps {
-         script {
-            echo '<--------------- Helm Deploy Started --------------->'
-            sh 'helm install devops-workshop devops-workshop-0.1.0.tgz'
-            echo '<--------------- Helm deploy Ends --------------->'
-         }
-       }
-     }
+        stage (" Docker Publish "){
+            steps {
+                script {
+                echo '<--------------- Docker Publish Started --------------->'
+                    docker.withRegistry(registry, 'artifact-cred'){
+                        app.push()
+                    }
+                echo '<--------------- Docker Publish Ended --------------->'
+                }
+            }
+        }
+
+        stage(" Deploy ") {
+            steps {
+                script {
+                    echo '<--------------- Helm Deploy Started --------------->'
+                    sh 'helm install devops-workshop devops-workshop-0.1.0.tgz'
+                    echo '<--------------- Helm deploy Ends --------------->'
+                }
+            }
+        }
 
     }
 }
