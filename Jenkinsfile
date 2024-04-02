@@ -101,13 +101,15 @@ environment {
         }
     }
 
-    stage ("Deploy") {
-        steps {
-            script {
-                sh './deploy.sh'
-            }
-        }
-    }
+    stage(" Deploy ") {
+       steps {
+         script {
+            echo '<--------------- Helm Deploy Started --------------->'
+            sh 'helm install devops-workshop devops-workshop-0.1.0.tgz'
+            echo '<--------------- Helm deploy Ends --------------->'
+         }
+       }
+     }
 
     }
 }
