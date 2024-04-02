@@ -1,6 +1,6 @@
 def registry = 'https://rachrafi.jfrog.io'
 def imageName = 'rachrafi.jfrog.io/rachrafi-docker-local/demo-workshop'
-def version   = '2.1.7'
+def version   = '2.1.8'
 
 pipeline {
     agent {
@@ -105,7 +105,7 @@ pipeline {
             steps {
                 script {
                     echo '<--------------- Helm Deploy Started --------------->'
-                    sh 'helm install devops-workshop devops-workshop-0.1.0.tgz'
+                    sh 'helm install devops-workshop devops-workshop-0.2.0.tgz'
                     echo '<--------------- Helm deploy Ends --------------->'
                 }
             }
