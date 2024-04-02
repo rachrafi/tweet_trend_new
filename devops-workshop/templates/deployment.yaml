@@ -17,7 +17,7 @@ spec:
       - name: jfrogcred
       containers:
       - name:  rachrafi
-        image: rachrafi.jfrog.io/rachrafi-docker-local/demo-workshop:2.1.8
+        image: rachrafi.jfrog.io/rachrafi-docker-local/demo-workshop:2.1.9
         imagePullPolicy: Always
         ports:
         - containerPort: 8000
